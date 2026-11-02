@@ -1,4 +1,3 @@
-```yaml
 name: Model Training CICD
 
 permissions:
@@ -57,4 +56,3 @@ jobs:
           else
             cml comment create combined_file.md --commit ${{ github.sha }}
           fi
-```
