@@ -3,16 +3,20 @@ name: Model Training CICD
 permissions:
   id-token: write
   contents: write
+  pull-requests: write
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   push:
+    branches: [main]
 
 jobs:
   run:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
@@ -45,4 +49,9 @@ jobs:
           echo '|[](./FeatureImportance.png "FeatureImportance")' >> report1.md
 
           cat report.md report1.md > combined_file.md
-          cml comment create combined_file.md
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            cml comment create combined_file.md
+          else
+            cml comment create combined_file.md --commit ${{ github.sha }}
+          fi
