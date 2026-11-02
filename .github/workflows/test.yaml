@@ -46,13 +46,21 @@ jobs:
           cat scores.txt >> report.md
 
           echo "Confusion Matrix & Feature Importance" > report1.md
-          echo "![Confusion Matrix](./ConfusionMatrix.png)" >> report1.md
-          echo "![Feature Importance](./FeatureImportance.png)" >> report1.md
+          echo "Images are available in GitHub Actions Artifacts." >> report1.md
 
           cat report.md report1.md > combined_file.md
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            cml comment create combined_file.md --target pr/${{ github.event.pull_request.number }}
+            cml comment create combined_file.md --target pr/${{ github.event.pull_request.number }} --publish false
           else
-            cml comment create combined_file.md --target commit/${{ github.sha }}
+            cml comment create combined_file.md --target commit/${{ github.sha }} --publish false
           fi
+
+      - name: Upload Model Images
+        uses: actions/upload-artifact@v4
+        with:
+          name: Model-Training-Images
+          path: |
+            ConfusionMatrix.png
+            FeatureImportance.png
+          if-no-files-found: error
