@@ -52,7 +52,7 @@ jobs:
           cat report.md report1.md > combined_file.md
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            cml comment create combined_file.md
+            cml comment create combined_file.md --target pr/${{ github.event.pull_request.number }}
           else
-            cml comment create combined_file.md --commit ${{ github.sha }}
+            cml comment create combined_file.md --target commit/${{ github.sha }}
           fi
